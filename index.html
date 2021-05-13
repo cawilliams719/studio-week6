@@ -3,8 +3,6 @@
 <head>
 	<title>Mali Health Sites Map</title>
 	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
-	<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
-	<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 	<style>
 		body {
 			margin: 0px;
@@ -61,6 +59,7 @@
 			font-size: 12px;
 			line-height: 18px;
 			margin: 0;
+			margin-left: 20px;
 		}
 
 		#controls {
@@ -96,8 +95,16 @@
 			<div id="narrative"><p>You can put narrative text or explanation here.</p></div>
 		</div>
 	</div>
+	<div id="controls">
+    <button id="addButton">Show All Health Sites</button>
+		<button id="RemoveButton">Hide All Health Sites</button>
+		<button class = "button" id="toggleButton">Toggle Health Sites</button>
+</div>
 	<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 	<script>
     // Create Map Object
     var map = L.map('map',{ center: [17.5707,-3.9962], zoom: 5 });
@@ -220,13 +227,40 @@
 		  };
 		}
 
-		//Adding the search geocoder
+		// Adding the search geocoder
 		L.Control.geocoder({
-			position: "topleft",
-			placeholder: "Enter place name",
-			errorMessage: "No place found.",
-		}).addTo(map);
+		  position: "topleft",
+		  placeholder: "Enter place name",
+		  errorMessage: "No place found.",
+		})
+		.addTo(map);
 
+		// Layer Toggle
+		// Create event listener for the Add Health Sites Button
+		document.getElementById("addButton").addEventListener("click", addHealth);
+
+		// add health sites function
+		function addHealth() {
+		    Healthsites.addTo(map);
+		};
+		// Create event listener for the Add Health Sites Button
+		document.getElementById("RemoveButton").addEventListener("click", removeHealth);
+
+		// remove Health Sites function
+		function removeHealth() {
+				map.removeLayer(Healthsites);
+		};
+		// Toggle Button
+		document.getElementById("toggleButton").addEventListener("click", toggleHealth);
+
+		// Toggle Health Sites
+		function toggleHealth(){
+		    if(map.hasLayer(Healthsites)){
+		        removeHealth();
+		    } else {
+		        addHealth();
+		    }
+		};
 	</script>
 </body>
 </html>
