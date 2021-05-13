@@ -102,23 +102,19 @@
 			<h1>Malnutrition & Health Sites in Mali</h1>
 		</div>
 		<div id="map"></div>
-		<div id="controls">
-			<!-- Here is the code for a button if we were going to add them.
-			<button class="button" id="toggleButton">BUTTON!</button>
-			-->
+			<div id="controls">
+		    <button class = "button" id="addButton">Show All Health Sites</button>
+				<button class = "button" id="removeButton">Hide All Health Sites</button>
+				<button class = "button" id="toggleButton">Toggle Health Sites</button>
+				<button class = "button" id="filterClinic">Clinic</button>
+		    <button class = "button" id="filterDentist">Dentist</button>
+				<button class = "button" id="filterDoctor">Doctor</button>
+				<button class = "button" id="filterHospital">Hospital</button>
+				<button class = "button" id="filterPharmacy">Pharmacy</button>
+		</div>
 			<div id="narrative"><p>You can put narrative text or explanation here.</p></div>
 		</div>
 	</div>
-	<div id="controls">
-    <button class = "button" id="addButton">Show All Health Sites</button>
-		<button class = "button" id="removeButton">Hide All Health Sites</button>
-		<button class = "button" id="toggleButton">Toggle Health Sites</button>
-		<button class = "button" id="filterClinic">Clinic</button>
-    <button class = "button" id="filterDentist">Dentist</button>
-		<button class = "button" id="filterDoctor">Doctor</button>
-		<button class = "button" id="filterHospital">Hospital</button>
-		<button class = "button" id="filterPharmacy">Pharmacy</button>
-</div>
 	<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 	<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
@@ -329,6 +325,7 @@
 			toggleHealth();
 		});
 
+		// Filter Clinic
 		// Use $( "elementID") and the jQuery click listener method to create a filter
 		$( "#filterClinic" ).click(function() {
 		    map.removeLayer(Healthsites);
@@ -351,6 +348,7 @@
 		    });
 		});
 
+		// Filter Dentist
 		$( "#filterDentist" ).click(function() {
 				map.removeLayer(Healthsites);
 				$.getJSON("data/Mali_healthsites.geojson",function(data){
@@ -372,6 +370,7 @@
 				});
 		});
 
+		// Filter Doctor
 		$( "#filterDoctor" ).click(function() {
 				map.removeLayer(Healthsites);
 				$.getJSON("data/Mali_healthsites.geojson",function(data){
@@ -393,6 +392,7 @@
 				});
 		});
 
+		// Filter Hospital
 		$( "#filterHospital" ).click(function() {
 				map.removeLayer(Healthsites);
 				$.getJSON("data/Mali_healthsites.geojson",function(data){
@@ -414,6 +414,7 @@
 				});
 		});
 
+		// Filter Pharmacy
 		$( "#filterPharmacy" ).click(function() {
 				map.removeLayer(Healthsites);
 				$.getJSON("data/Mali_healthsites.geojson",function(data){
