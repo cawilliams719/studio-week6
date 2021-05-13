@@ -79,6 +79,20 @@
 			margin-top: 0px;
 			margin-bottom: 0px;
 		}
+		/* Button */
+		.button {
+		  background-color: #404241;
+		  border: none;
+		  color: white;
+		  padding: 15px 30px;
+		  text-align: center;
+		  text-decoration: none;
+		  display: inline-block;
+		  font-size: 16px;
+		  margin: 4px 2px;
+		  cursor: pointer;
+			border-radius: 5px;
+		}
 	</style>
 </head>
 <body>
@@ -96,9 +110,14 @@
 		</div>
 	</div>
 	<div id="controls">
-    <button id="addButton">Show All Health Sites</button>
-		<button id="RemoveButton">Hide All Health Sites</button>
+    <button class = "button" id="addButton">Show All Health Sites</button>
+		<button class = "button" id="removeButton">Hide All Health Sites</button>
 		<button class = "button" id="toggleButton">Toggle Health Sites</button>
+		<button class = "button" id="filterClinic">Clinic</button>
+    <button class = "button" id="filterDentist">Dentist</button>
+		<button class = "button" id="filterDoctor">Doctor</button>
+		<button class = "button" id="filterHospital">Hospital</button>
+		<button class = "button" id="filterPharmacy">Pharmacy</button>
 </div>
 	<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -235,24 +254,37 @@
 		})
 		.addTo(map);
 
+		// Define new markers for toggling layers
 		// Layer Toggle
-		// Create event listener for the Add Health Sites Button
-		document.getElementById("addButton").addEventListener("click", addHealth);
-
 		// add health sites function
 		function addHealth() {
-		    Healthsites.addTo(map);
-		};
-		// Create event listener for the Add Health Sites Button
-		document.getElementById("RemoveButton").addEventListener("click", removeHealth);
-
+			map.removeLayer(Healthsites);
+			$.getJSON("data/Mali_healthsites.geojson",function(data){
+				 // add GeoJSON layer to the map once the file is loaded
+				Healthsites = L.geoJson(data,{
+							onEachFeature: function (feature, layer) {
+								layer.bindPopup('Type: '+feature.properties.amenity+'<br>Name: '+feature.properties.name+'');
+							}, pointToLayer: function (feature, latlng) {
+								if (feature.properties.amenity == "clinic"){ // Replacing previous marker with conditionals
+									var marker = L.marker(latlng,{icon: clinicIcon});
+								} else if (feature.properties.amenity == "dentist") {
+									var marker = L.marker(latlng,{icon: dentistIcon});
+								} else if (feature.properties.amenity == "doctors") {
+									var marker = L.marker(latlng,{icon: doctorsIcon});
+								} else if (feature.properties.amenity == "hospital") {
+									var marker = L.marker(latlng,{icon: hospitalIcon});
+								} else {
+									var marker = L.marker(latlng,{icon: pharmacyIcon});
+								};
+							return marker;
+							}
+						}).addTo(map);
+					});
+				};
 		// remove Health Sites function
 		function removeHealth() {
 				map.removeLayer(Healthsites);
 		};
-		// Toggle Button
-		document.getElementById("toggleButton").addEventListener("click", toggleHealth);
-
 		// Toggle Health Sites
 		function toggleHealth(){
 		    if(map.hasLayer(Healthsites)){
@@ -261,6 +293,147 @@
 		        addHealth();
 		    }
 		};
+		// add health sites function
+		// Use $( "elementID") and the jQuery click listener method to add all of the data layers
+		$( "#addButton" ).click(function() {
+		    map.removeLayer(Healthsites);
+		    $.getJSON("data/Mali_healthsites.geojson",function(data){
+		       // add GeoJSON layer to the map once the file is loaded
+					Healthsites = L.geoJson(data,{
+								onEachFeature: function (feature, layer) {
+									layer.bindPopup('Type: '+feature.properties.amenity+'<br>Name: '+feature.properties.name+'');
+								}, pointToLayer: function (feature, latlng) {
+									if (feature.properties.amenity == "clinic"){ // Replacing previous marker with conditionals
+										var marker = L.marker(latlng,{icon: clinicIcon});
+									} else if (feature.properties.amenity == "dentist") {
+										var marker = L.marker(latlng,{icon: dentistIcon});
+									} else if (feature.properties.amenity == "doctors") {
+										var marker = L.marker(latlng,{icon: doctorsIcon});
+									} else if (feature.properties.amenity == "hospital") {
+										var marker = L.marker(latlng,{icon: hospitalIcon});
+									} else {
+										var marker = L.marker(latlng,{icon: pharmacyIcon});
+									};
+								return marker;
+								}
+							}).addTo(map);
+						});
+					});
+		// remove Health Sites function
+		$( "#removeButton" ).click(function() {
+			map.removeLayer(Healthsites);
+		});
+
+		// Toggle Button
+		$( "#toggleButton" ).click(function() {
+			toggleHealth();
+		});
+
+		// Use $( "elementID") and the jQuery click listener method to create a filter
+		$( "#filterClinic" ).click(function() {
+		    map.removeLayer(Healthsites);
+		    $.getJSON("data/Mali_healthsites.geojson",function(data){
+		        // add GeoJSON layer to the map once the file is loaded
+						Healthsites = L.geoJson(data,{
+		            onEachFeature: function (feature, layer) {
+		                layer.bindPopup('Type: '+feature.properties.amenity+'<br>Name: '+feature.properties.name+'');
+		            }, filter: function (feature, layer) {
+		                return feature.properties.amenity == "clinic";
+		            }, pointToLayer: function (feature, latlng){
+									if (feature.properties.amenity == "clinic"){ // Replacing previous marker with conditionals
+										var marker = L.marker(latlng,{icon: clinicIcon});
+									} else {
+										var marker = L.marker(latlng,{icon: clinicIcon});
+									};
+								return marker;
+								}
+		        }).addTo(map);
+		    });
+		});
+
+		$( "#filterDentist" ).click(function() {
+				map.removeLayer(Healthsites);
+				$.getJSON("data/Mali_healthsites.geojson",function(data){
+						// add GeoJSON layer to the map once the file is loaded
+						Healthsites = L.geoJson(data,{
+								onEachFeature: function (feature, layer) {
+										layer.bindPopup('Type: '+feature.properties.amenity+'<br>Name: '+feature.properties.name+'');
+								}, filter: function (feature, layer) {
+										return feature.properties.amenity == "dentist";
+								}, pointToLayer: function (feature, latlng){
+									if (feature.properties.amenity == "dentist"){ // Replacing previous marker with conditionals
+										var marker = L.marker(latlng,{icon: dentistIcon});
+									} else {
+										var marker = L.marker(latlng,{icon: dentistIcon});
+									};
+								return marker;
+								}
+						}).addTo(map);
+				});
+		});
+
+		$( "#filterDoctor" ).click(function() {
+				map.removeLayer(Healthsites);
+				$.getJSON("data/Mali_healthsites.geojson",function(data){
+						// add GeoJSON layer to the map once the file is loaded
+						Healthsites = L.geoJson(data,{
+								onEachFeature: function (feature, layer) {
+										layer.bindPopup('Type: '+feature.properties.amenity+'<br>Name: '+feature.properties.name+'');
+								}, filter: function (feature, layer) {
+										return feature.properties.amenity == "doctors";
+								}, pointToLayer: function (feature, latlng){
+									if (feature.properties.amenity == "doctors"){ // Replacing previous marker with conditionals
+										var marker = L.marker(latlng,{icon: doctorsIcon});
+									} else {
+										var marker = L.marker(latlng,{icon: doctorsIcon});
+									};
+								return marker;
+								}
+						}).addTo(map);
+				});
+		});
+
+		$( "#filterHospital" ).click(function() {
+				map.removeLayer(Healthsites);
+				$.getJSON("data/Mali_healthsites.geojson",function(data){
+						// add GeoJSON layer to the map once the file is loaded
+						Healthsites = L.geoJson(data,{
+								onEachFeature: function (feature, layer) {
+										layer.bindPopup('Type: '+feature.properties.amenity+'<br>Name: '+feature.properties.name+'');
+								}, filter: function (feature, layer) {
+										return feature.properties.amenity == "hospital";
+								}, pointToLayer: function (feature, latlng){
+									if (feature.properties.amenity == "hospital"){ // Replacing previous marker with conditionals
+										var marker = L.marker(latlng,{icon: hospitalIcon});
+									} else {
+										var marker = L.marker(latlng,{icon: hospitalIcon});
+									};
+								return marker;
+								}
+						}).addTo(map);
+				});
+		});
+
+		$( "#filterPharmacy" ).click(function() {
+				map.removeLayer(Healthsites);
+				$.getJSON("data/Mali_healthsites.geojson",function(data){
+						// add GeoJSON layer to the map once the file is loaded
+						Healthsites = L.geoJson(data,{
+								onEachFeature: function (feature, layer) {
+										layer.bindPopup('Type: '+feature.properties.amenity+'<br>Name: '+feature.properties.name+'');
+								}, filter: function (feature, layer) {
+										return feature.properties.amenity == "pharmacy";
+								}, pointToLayer: function (feature, latlng){
+									if (feature.properties.amenity == "pharmacy"){ // Replacing previous marker with conditionals
+										var marker = L.marker(latlng,{icon: pharmacyIcon});
+									} else {
+										var marker = L.marker(latlng,{icon: pharmacyIcon});
+									};
+								return marker;
+								}
+						}).addTo(map);
+				});
+		});
 	</script>
 </body>
 </html>
